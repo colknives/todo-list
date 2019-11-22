@@ -34,25 +34,46 @@ const POST = (uri, params, headers = {}) => {
                     }
                     case 400:
                     case 404:
-                    case 401: {
+                    default: {
                         reject({
-                            status: error.status,
+                            status: 500,
                             errors: {
-                                message: error.data.message
+                                message:
+                                    "Something went wrong, please try again"
                             }
                         });
-                        break;
                     }
-                    case 4041: {
+                }
+            });
+    });
+};
+
+const PUT = (uri, params, headers = {}) => {
+    return new Promise((resolve, reject) => {
+        API.put(uri, params, { headers })
+            .then(response => {
+                resolve(response.data);
+            })
+            .catch(error => {
+                error = error.response;
+
+                switch (error.status) {
+                    case 422: {
+                        let errors = {};
+                        _.each(
+                            error.data,
+                            (item, key) => (errors[key] = _.head(item))
+                        );
+
                         reject({
                             status: error.status,
-                            errors: {
-                                message: error.data.message,
-                                type: error.data.type
-                            }
+                            errors
                         });
+
                         break;
                     }
+                    case 400:
+                    case 404:
                     default: {
                         reject({
                             status: 500,
@@ -106,6 +127,7 @@ const MULTIPLE_DELETE = (uri, data, headers = null) => {
 
 export default {
     post: POST,
+    put: PUT,
     get: GET,
     delete: DELETE,
     multipleDelete: MULTIPLE_DELETE

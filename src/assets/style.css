@@ -4,12 +4,23 @@ body{
 	font-family: Cerebri Sans,sans-serif;
 }
 
-#app {
-  width: 50%;
+@media (min-width: 576px) {
+  #app {
+  width: 100%;
   padding-right: 12px;
   padding-left: 12px;
   margin-right: auto;
   margin-left: auto; }
+}
+
+@media (min-width: 992px) {
+  #app {
+    width: 50%;
+    padding-right: 12px;
+    padding-left: 12px;
+    margin-right: auto;
+    margin-left: auto; }
+}
 
 .container-fluid{
 	padding: 20px 50px 20px 50px;
@@ -51,4 +62,8 @@ body{
 
   .line-through{
   	text-decoration: line-through;
+  }
+
+  .todo-delete{
+    text-align: right;
   }

@@ -10,6 +10,8 @@ export default new Vuex.Store({
         hasErrors: false,
         errorMessage: '',
         loading: false,
+        uuid: false,
+        name: '',
         todoListOpen: false,
         todoListComplete: false
     },
@@ -29,6 +31,12 @@ export default new Vuex.Store({
         clearList(state){
             state.todoListOpen = false;
             state.todoListComplete = false;
+        },
+        setUuid(state, uuid){
+            state.uuid = uuid;
+        },
+        setName(state, name){
+            state.name = name;
         },
         setOpenList(state, list){
             state.todoListOpen = list;
@@ -58,12 +66,80 @@ export default new Vuex.Store({
             commit("loading");  
 
             try {
-                let response = await todoApi.getItemOpenList();
+                let response = await todoApi.getItemCompleteList();
 
                 commit("unloading");
 
                 if( response ){
-                    commit('setOpenList', response.items);
+                    commit('setCompleteList', response.items);
+                }
+            } catch (errors) {
+                commit("unloading");
+                commit("errors", errors);
+            }
+        },
+        markComplete: async ({ state, commit, dispatch }) => {
+            commit("loading");  
+
+            try {
+                let response = await todoApi.markItem(state.uuid, 'complete');
+
+                commit("unloading");
+
+                if( response ){
+                    dispatch('getItemOpenList');
+                    dispatch('getItemCompleteList');
+                }
+            } catch (errors) {
+                commit("unloading");
+                commit("errors", errors);
+            }
+        },
+        markOpen: async ({ state, commit, dispatch }) => {
+            commit("loading");  
+
+            try {
+                let response = await todoApi.markItem(state.uuid, 'open');
+
+                commit("unloading");
+
+                if( response ){
+                    dispatch('getItemOpenList');
+                    dispatch('getItemCompleteList');
+                }
+            } catch (errors) {
+                commit("unloading");
+                commit("errors", errors);
+            }
+        },
+        addItem: async ({ state, commit, dispatch }) => {
+            commit("loading");  
+
+            try {
+                let response = await todoApi.addItem(state.name);
+
+                commit("unloading");
+
+                if( response ){
+                    dispatch('getItemOpenList');
+                    dispatch('getItemCompleteList');
+                }
+            } catch (errors) {
+                commit("unloading");
+                commit("errors", errors);
+            }
+        },
+        deleteItem: async ({ state, commit, dispatch }) => {
+            commit("loading");  
+
+            try {
+                let response = await todoApi.deleteItem(state.uuid);
+
+                commit("unloading");
+
+                if( response ){
+                    dispatch('getItemOpenList');
+                    dispatch('getItemCompleteList');
                 }
             } catch (errors) {
                 commit("unloading");
