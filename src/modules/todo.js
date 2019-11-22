@@ -1,10 +1,6 @@
-import Vue from 'vue'
-import Vuex from 'vuex'
 import todoApi from '../services/todo';
 
-Vue.use(Vuex)
-
-export default new Vuex.Store({
+export default {
     namespaced: true,
     state: {
         hasErrors: false,
@@ -70,6 +66,5 @@ export default new Vuex.Store({
                 commit("errors", errors);
             }
         }
-    }
-});
-
+     }
+};
